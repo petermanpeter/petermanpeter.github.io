@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects · petermanpeter</title>
+<style>
+  :root{
+    --bg:#f4efe4; --card:#fffdf7; --ink:#2e2a24; --muted:#7a7263;
+    --accent:#3d6b57; --line:#ddd3bd;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"PingFang HK","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;}
+  header{max-width:960px;margin:0 auto;padding:56px 24px 8px}
+  header h1{font-size:40px;margin:0 0 6px;letter-spacing:.5px}
+  header p{color:var(--muted);margin:0;font-size:16px}
+  main{max-width:960px;margin:0 auto;padding:24px}
+  section{margin:36px 0}
+  h2.cat{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);
+    border-bottom:2px solid var(--line);padding-bottom:8px;margin:0 0 20px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+  a.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:22px 22px 18px;text-decoration:none;color:var(--ink);
+    transition:transform .15s ease, box-shadow .15s ease}
+  a.card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(60,50,30,.12)}
+  .card .tag{display:inline-block;font-size:11px;letter-spacing:2px;color:var(--accent);
+    border:1px solid var(--accent);border-radius:999px;padding:2px 10px;margin-bottom:12px}
+  .card h3{margin:0 0 4px;font-size:21px}
+  .card .en{color:var(--muted);font-size:13px;margin:0 0 10px}
+  .card .desc{font-size:14px;line-height:1.55;margin:0;color:#4c463c}
+  .card .meta{margin-top:14px;font-size:12px;color:var(--muted)}
+  footer{max-width:960px;margin:0 auto;padding:12px 24px 48px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Projects</h1>
+  <p>petermanpeter 嘅小作品收藏 · A small collection of personal projects</p>
+</header>
+<main>
+  <section>
+    <h2 class="cat">3D Model</h2>
+    <div class="grid">
+      <a class="card" href="3d-model/pui-ching.html">
+        <span class="tag">3D MODEL</span>
+        <h3>香港培正小學 · 培正中學</h3>
+        <p class="en">Pui Ching Primary School &amp; Middle School — Ho Man Tin</p>
+        <p class="desc">250 米袖珍模型：培正小學同直屬中學兩個校園，加上 1950 年代培正牌坊。四季同節日場景齊全。</p>
+        <p class="meta">何文田 · Pocket City</p>
+      </a>
+      <a class="card" href="3d-model/royal-ascot.html">
+        <span class="tag">3D MODEL</span>
+        <h3>駿景園</h3>
+        <p class="en">Royal Ascot — Fo Tan</p>
+        <p class="desc">200 米袖珍模型：駿景園五座住宅、平台花園、樂基幼兒學校，同東鐵何東樓車廠嘅路軌。</p>
+        <p class="meta">火炭 · Pocket City</p>
+      </a>
+      <a class="card" href="3d-model/stgss.html">
+        <span class="tag">3D MODEL</span>
+        <h3>沙田官立中學</h3>
+        <p class="en">Sha Tin Government Secondary School — Tai Wai</p>
+        <p class="desc">200 米袖珍模型：1972 年創校嘅四合院校舍、校園中央嘅老雪松，同校旁嘅城門河。</p>
+        <p class="meta">大圍 · Pocket City</p>
+      </a>
+      <a class="card" href="3d-model/st-catherines.html">
+        <span class="tag">3D MODEL</span>
+        <h3>國際英文幼稚園</h3>
+        <p class="en">St. Catherine's International Kindergarten — Kowloon Tong</p>
+        <p class="desc">200 米袖珍模型：羅福道黃色校舍群、紅色校門，同隔籬嘅德教會紫和閣。</p>
+        <p class="meta">九龍塘 · Pocket City</p>
+      </a>
+    </div>
+  </section>
+</main>
+<footer>
+  地圖同建築數據 © OpenStreetMap contributors · 模型以 Pocket City 引擎製作
+</footer>
+</body>
+</html>
