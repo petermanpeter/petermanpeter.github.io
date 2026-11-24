@@ -1108,6 +1108,10 @@ const LANDMARKS = [
       // one ribbon window band: from local point a to b, pushed out along
       // local normal n, at height z
       function band(ax0, ay0, ax1, ay1, nx, ny, z) {
+        // Skip faces turned away from the camera: without this the bands on
+        // the far (hidden) faces paint over the near faces and the roof,
+        // reading as a doubled/lattice graphic at high zoom.
+        if (!vis([nx, ny, 0])) return '';
         const o = 0.06;
         const p1 = P(ax0 + nx * o, ay0 + ny * o), p2 = P(ax1 + nx * o, ay1 + ny * o);
         return shape([[p1[0], p1[1], z], [p2[0], p2[1], z], [p2[0], p2[1], z + 1.35], [p1[0], p1[1], z + 1.35]],
