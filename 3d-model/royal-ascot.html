@@ -1073,8 +1073,14 @@ const CITY={"buildings":{"w255994236":{"facade":"plain","parapet":0.4,"roof":"fl
 // Royal Ascot podium, hand-built so the layer-3 facilities mapped in
 // OpenStreetMap ON the podium roof (4 tennis courts, swimming pool,
 // playground, 2 fountains) can be drawn on top of the slab in one pass.
-// Facility positions/sizes are from OSM; their colours are illustrative.
+// Facility positions/sizes are from OSM. Surface colours follow the user's
+// photos (2026-11-24 aerials; 2026-11-25 aerial + tower photos): tennis
+// courts red surround with green playing surface, turquoise pool, towers
+// near-white with green-glass crowns, glass pyramid skylight by the pool.
 // The clubhouse is inside the podium and is not mapped separately.
+// ring outline (kit edge() is a 2-point segment, so rings need their own path)
+const ringEdge = (ring3, colour, w) =>
+  '<path d="' + pd(ring3) + '" fill="none" stroke="' + colour + '" style="stroke-width:' + w + '"/>';
 const GARDEN_TREES = [[-100, 150], [-15, 150], [-35, 110], [-35, -85], [-25, -15], [-90, 90], [-95, -10], [-45, -95]];
 const FACILITIES = [{"kind": "pool", "ring": [[-77.41, -30.94], [-42.11, -66.2], [-52.66, -76.69], [-87.95, -41.43]]}, {"kind": "tennis", "ring": [[-37.37, -4.61], [-53.45, 11.63], [-60.69, 4.5], [-44.6, -11.73]]}, {"kind": "tennis", "ring": [[-61.39, 26.49], [-77.48, 42.74], [-84.71, 35.62], [-68.62, 19.37]]}, {"kind": "tennis", "ring": [[-35.18, 51.5], [-51.26, 67.75], [-58.5, 60.63], [-42.42, 44.39]]}, {"kind": "tennis", "ring": [[-48.19, 39.02], [-64.28, 55.26], [-71.52, 48.14], [-55.43, 31.9]]}, {"kind": "fountain", "ring": [[1.15, 39.84], [20.42, 39.99], [20.42, 35.53], [1.17, 35.39]]}, {"kind": "fountain", "ring": [[-22.8, 182.84], [-20.83, 182.83], [-21.08, 160.28], [-23.06, 160.29]]}, {"kind": "playground", "ring": [[-84.49, 25.33], [-86.28, 5.89], [-80.14, -0.68], [-69.85, 9.85]]}];
 const LANDMARKS = [
@@ -1094,8 +1100,8 @@ const LANDMARKS = [
        for (const f of FACILITIES) {
          if (f.kind === 'tennis') {
            s += shape(atZ(f.ring, Z), '#9c4a3a', 0.25)
-              + shape(atZ(scaleR(f.ring, 0.8), Z + 0.02), '#a85a44', 0.2)
-              + edge(atZ(f.ring, Z + 0.03), '#f5f2e8', 0.14);
+              + shape(atZ(scaleR(f.ring, 0.8), Z + 0.02), '#7d9b6a', 0.2)
+              + ringEdge(atZ(f.ring, Z + 0.03), '#f5f2e8', 0.14);
          } else if (f.kind === 'pool') {
            s += shape(atZ(f.ring, Z), '#8a97a3', 0.25)
               + shape(atZ(scaleR(f.ring, 0.93), Z + 0.02), '#57a7c7', 0.15);
@@ -1116,7 +1122,7 @@ const LANDMARKS = [
             + shape(oct(tx, ty, 2.2, Z + 1.2), '#54743f', 0.2);
        }
        // Jogging track: a pale loop just inside the podium edge.
-       s += edge(atZ(insetRing(ring, 7), Z + 0.02), '#ddd2b4', 1.1);
+       s += ringEdge(atZ(insetRing(ring, 7), Z + 0.02), '#ddd2b4', 1.1);
        // Garden path down the podium spine.
        s += shape(atZ([[-32,-60],[-27,-60],[-27,160],[-32,160]], Z + 0.01), '#d9cfb6', 0.2);
        // Chess pavilion 棋藝亭 (illustrative form and spot).
@@ -1128,10 +1134,32 @@ const LANDMARKS = [
        // one is in frame, and the indoor facilities are inside the podium.
        s += loft(atZ([[-98,-72],[-78,-72],[-78,-42],[-98,-42]], Z), atZ([[-98,-72],[-78,-72],[-78,-42],[-98,-42]], Z + 6.5), n => tone(n, soft('#e8e2d2')))
           + shape(atZ([[-98,-72],[-78,-72],[-78,-42],[-98,-42]], Z + 6.5), '#b9bfae', 0.3);
+       // Glass pyramid skylight on the clubhouse roof (photo).
+       s += loft(atZ([[-94,-64],[-82,-64],[-82,-52],[-94,-52]], Z + 6.5), atZ([[-89.5,-59.5],[-86.5,-59.5],[-86.5,-56.5],[-89.5,-56.5]], Z + 10.5), n => tone(n, soft('#9fc4cf')))
+          + shape(atZ([[-89.5,-59.5],[-86.5,-59.5],[-86.5,-56.5],[-89.5,-56.5]], Z + 10.5), '#b7d4dd', 0.2);
        return s;
      });
    } }
 ];
+
+// Green-glass crowns on the six whole towers (photo: green-tinted glass
+// band at the top of each near-white tower).
+function CITY_EXTRA(t) {
+  const atZ = (r, z) => r.map(([x, y]) => [x, y, z]);
+  const scaleR = (r, f) => {
+    const cx = r.reduce((a, p) => a + p[0], 0) / r.length, cy = r.reduce((a, p) => a + p[1], 0) / r.length;
+    return r.map(([x, y]) => [cx + (x - cx) * f, cy + (y - cy) * f]);
+  };
+  const LEVEL = 3.1;
+  return ['w255994199', 'w255994203', 'w255994211', 'w255994213', 'w255994215', 'w255994216'].map(id => {
+    const b = findBuilding(id);
+    const top = b.lv * LEVEL + 0.6;
+    const ring = scaleR(b.ring, 1.008);
+    return { fp: b.ring, h: top + 0.3, draw: () =>
+      loft(atZ(ring, top - 7.5), atZ(ring, top + 0.3), n => tone(n, soft('#7fae9d')))
+      + shape(atZ(ring, top + 0.3), '#a8b8a6', 0.3) };
+  });
+}
 
 </script>
 <script type="text/plain" id="city">
@@ -2313,7 +2341,7 @@ selectSeason(season);setPlay(playing);requestAnimationFrame(tick);
 <script>
 /* Injected map labels - see work/inject_labels.py */
 (function(){
-var LABELS = [[0, 0, 117, "第6座"], [-56, 30, 10, "網球場"], [-65, -54, 10, "泳池"], [-80, 10, 10, "遊樂場"], [-35, 95, 10, "棋藝亭"], [-88, -57, 10, "駿景閣"], [-76, -125, 9, "駿景廣場"], [150, 95, 20, "沙田馬場"]];
+var LABELS = [[0, 0, 117, "第6座"], [2, 123, 135, "第3座"], [2, 77, 135, "第5座"], [-1, -52, 120, "第7座"], [-68, 124, 140, "第8座"], [-68, 170, 140, "第9座"], [-56, 30, 10, "網球場"], [-65, -54, 10, "泳池"], [-80, 10, 10, "遊樂場"], [-35, 95, 10, "棋藝亭"], [-88, -57, 10, "駿景閣"], [-76, -125, 9, "駿景廣場"], [150, 95, 20, "沙田馬場"]];
 var CAM_K = Math.sqrt(1.5);
 function camBasis(yaw,pitch){var t=yaw*Math.PI/180,p=pitch*Math.PI/180,ct=Math.cos(t),st=Math.sin(t),cp=Math.cos(p),sp=Math.sin(p);
   return {R:[-st,ct,0],U:[-sp*ct,-sp*st,cp]};}
